@@ -43,9 +43,3 @@ variable "KeyName" {
   type        = string
   default     = "VMsKeyPair"
 }
-
-variable "MyIP" {
-  description = "My public IP"
-  type        = string
-  default     = "96.247.194.92/32"
-}
