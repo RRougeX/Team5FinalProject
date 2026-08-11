@@ -1,19 +1,11 @@
-from importlib.resources import path
 import os
 from dotenv import load_dotenv
-# Need to import bedrock_converse, just bedrock is legacy.
 from llama_index.llms.bedrock_converse import BedrockConverse
 
-
-#from indexReport.py pull def
-from indexReport import loadAndChunkReport
-
-#https://developers.llamaindex.ai/python/framework/integrations/llm/bedrock/
-
-def getBedrockModelEmbed():
+def getBedrockModelQueryEngine():
         load_dotenv()  # Load environment variables from .env file
 
-        model = os.getenv("BEDROCK_MODEL")
+        model = "amazon.nova-pro-v1:0"
         profile_name = os.getenv("AWS_PROFILE_NAME")
 
         print(f"Using Bedrock model: {model}")
@@ -29,6 +21,3 @@ def getBedrockModelEmbed():
         region_name=os.getenv("REGION_NAME"),)
 
         return llm
-
-# We might want to set up Streaming? (stream_chat)
-
