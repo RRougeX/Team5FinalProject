@@ -40,3 +40,5 @@ crash.log
 
 # We do not want to push the data/reports we are using for this project to GitHub
 data
+src/config.ini
+config.ini

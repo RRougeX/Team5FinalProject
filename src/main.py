@@ -1,54 +1,63 @@
-from pathlib import Path
-from llama_index.core import Settings, VectorStoreIndex
-#from bedrockEmbed import getBedrockModel
-from bedrockQueryEngine import getBedrockModelQueryEngine
-from indexReport import loadAndChunkReports, loadAndChunkReport
-from ModelEmbed import getEmbeddingModel
+import sys
+from tools.aws_key_manager import enterNewKeys, is_AWS_config_credentials_valid
 from tools.title import header
+from system.chromaDB import load_embedding_data, create_embedding_data
 from tools.logCleanup import cleanLogs
-from tools.folderPathLogic import get_folder_path, list_files_recursive
+from tools.helper_functions import options_printer
+from system.queryManager import start_query_manager
 
-cleanLogs()
+def load_or_create_embedding_data():
+    user_input = options_printer(["Load existing embedding data", "Create new embedding data", "Back"])
 
-projectRoot = Path(__file__).resolve().parent.parent
-def userInput():
-    filePath = Path(input("Enter report path: ").strip())
-    source = input("Enter source organization: ").strip()
-    return filePath, source
+    match user_input:
+        case "1":
+            print("Loading existing embedding data.")
+            return load_embedding_data()
 
-def get_index(folder):
-    report_paths = [Path(p) for p in list_files_recursive(folder)]
-    reportIDs, allDocuments, chunks = loadAndChunkReports(report_paths, "")
+        case "2":
+            print("Creating new embedding data.")
+            return create_embedding_data()
 
-    print("Loading model...")
-    llm = getEmbeddingModel()
-    # Becomes our new global, which means things like VectorStoreIndex will use this LLM for embedding creation.
-    #Settings.embed_model = llm
-    print(llm.model_name + " loaded✅")
+        case "3":
+            return None
 
-    # Use VectorStoreIndex to create a index directly from chunks
-    print("Creating embeddings...")
-    # Passing in model to function instead of using global variable.
-    index = VectorStoreIndex(chunks, embed_model=llm, show_progress=True)
-    print("Report successfully indexed✅")
+def awsKeyCheck():
+    user_input = options_printer(["Enter new keys", "Check if keys are valid", "Back (keep using current keys)"], "Pluralsight Sandbox Keys")
 
-    # print (f"Report ID: {reportID}")
-    print(f"Report IDs: {reportIDs}")
-    #print(f"Total stored chunks: {collection.count()}")
+    match user_input:
+        case "1":
+            enterNewKeys()
+        case "2":
+            valid = is_AWS_config_credentials_valid()
+            print(f"Keys are {'Valid' if valid else 'Invalid'}")
+        case "3":
+            return
 
-    return index
+#########################################################################################################
 
+def main():
+    cleanLogs()
+    print(header())
+    print("Welcome to Team 5 Malware RAG!")
+    while True:
+        user_input = options_printer(["Change AWS bedrock AI keys","Load or create embedding data and run a model","Exit"],"Select a option.")
+        # Option 1
+        match user_input:
+            case "1":
+                awsKeyCheck()
+            case "2":
+                # Check if AWS Keys are valid before continuing.
+                if not is_AWS_config_credentials_valid():
+                    print("Please fix your AWS keys in option 1.")
+                    continue
+                index = load_or_create_embedding_data()
+                if index == None:
+                    continue
+                start_query_manager(index)
+            case "3":
+                print("Bye!")
+                sys.exit(0)
+
+#Run MAIN.PY
 if __name__ == "__main__":
-    # Split up for testing purposes (test case creation)
-    print((header())) #super awesome cool title
-    folder_path = get_folder_path()
-    index = get_index(folder_path)
-
-    # We need to pass in the bedrock model as the query engine.
-    query_engine = index.as_query_engine(llm=getBedrockModelQueryEngine())
-    print("=====================================================================================================================================================================================================\n")
-
-    # We need to make a new def that handles querys and loops the query engine so that we don't clear the embeddings every time we ask a new question. (We want to keep the context of the report in memory for the session.)
-    query = input("What would you like to ask about for the document you selected: ")
-    response = query_engine.query(query)
-    print(f"\nResponse: {response}")
+    main()
