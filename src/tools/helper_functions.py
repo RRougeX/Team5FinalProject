@@ -1,9 +1,12 @@
 
-def options_printer(options_text = ["!!!NO OPTIONS INPUTED!!!"], question = "What would you like to do?"):
+def options_printer(options_text = ["!!!NO OPTIONS INPUTED!!!"], question = "What would you like to do?", user_input=""):
     """
     Takes in a list of string which will be the options the user can select from. These options will be numerically assigned in order starting from 1.
     Returns a users input.
     """
+
+    if len(options_text) <= 0:
+        return ""
 
     options = []
 
@@ -13,7 +16,11 @@ def options_printer(options_text = ["!!!NO OPTIONS INPUTED!!!"], question = "Wha
         options.append(str(i))
 
     choices_str = {', '.join(options)}
-        
+
+    # This line is just for making testing automatable.
+    if user_input != "":
+        return user_input
+
     while True:
         user_input = input(
                 f"Enter your choice: {choices_str}\n: "

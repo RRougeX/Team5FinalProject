@@ -71,21 +71,3 @@ def is_AWS_config_credentials_valid() -> bool:
     except NoCredentialsError:
         print("Error: No AWS credentials could be found in your environment.")
         return False
-
-
-def testKeys():
-    config = load_config()
-    aws = config["AWS"]
-
-    access_key_id = aws["access_key_id"]
-    secret_access_key = aws["secret_access_key"]
-    region = aws["region"]
-
-    try:
-        boto3.client("sts").get_caller_identity()
-        print("AWS keys are valid✅")
-        return True
-
-    except ClientError:
-        print("AWS keys are invalid or expired.")
-        return False
