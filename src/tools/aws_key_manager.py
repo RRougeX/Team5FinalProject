@@ -3,13 +3,16 @@ import boto3
 from botocore.exceptions import ClientError, EndpointConnectionError, NoCredentialsError, NoRegionError
 from tools.folder_path_logic import load_config, load_config_and_get_section, save_config
 
-def enter_new_keys():
+def enter_new_keys(config_path: str = ""):
     # Try to load in config before we add new things to prevent overwriting.
-    config = load_config()
+    if config_path == "":
+        config = load_config()
+    else:
+        config = load_config(config_path=config_path)
 
     config["AWS"] = {
         "access_key_id": input("AWS access key: ").strip(),
-        "secret_access_key": getpass("AWS secret key: ").strip(),
+        "secret_access_key": getpass("AWS secret key: ", echo_char="*").strip(),
         "region": input("AWS region: ").strip()
     }
 
