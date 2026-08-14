@@ -1,9 +1,9 @@
 from getpass import getpass
 import boto3
 from botocore.exceptions import ClientError, EndpointConnectionError, NoCredentialsError, NoRegionError
-from tools.folderPathLogic import load_config, load_config_and_get_section, save_config
+from tools.folder_path_logic import load_config, load_config_and_get_section, save_config
 
-def enterNewKeys():
+def enter_new_keys():
     # Try to load in config before we add new things to prevent overwriting.
     config = load_config()
 

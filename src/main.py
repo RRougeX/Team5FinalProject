@@ -2,7 +2,7 @@ import sys
 from tools.aws_key_manager import enterNewKeys, is_AWS_config_credentials_valid
 from tools.title import header
 from system.chromaDB import load_embedding_data, create_embedding_data
-from tools.logCleanup import cleanLogs
+from Team5FinalProject.src.tools.log_cleanup import cleanLogs
 from tools.helper_functions import options_printer
 from system.queryManager import start_query_manager
 

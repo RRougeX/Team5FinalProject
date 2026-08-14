@@ -3,7 +3,7 @@ import chromadb
 from llama_index.core import StorageContext, VectorStoreIndex
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from system.indexReport import loadAndChunkReports
-from tools.folderPathLogic import get_folder_path, list_files_recursive
+from Team5FinalProject.src.tools.folder_path_logic import get_folder_path, list_files_recursive
 from system.models import get_embedding_llm_print
 from datetime import datetime
 from pathlib import Path
