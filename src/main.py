@@ -1,8 +1,8 @@
 import sys
-from tools.aws_key_manager import enterNewKeys, is_AWS_config_credentials_valid
+from tools.aws_key_manager import enter_new_keys, is_AWS_config_credentials_valid
 from tools.title import header
 from system.chromaDB import load_embedding_data, create_embedding_data
-from Team5FinalProject.src.tools.log_cleanup import cleanLogs
+from tools.log_cleanup import cleanLogs
 from tools.helper_functions import options_printer
 from system.queryManager import start_query_manager
 
@@ -26,7 +26,7 @@ def awsKeyCheck():
 
     match user_input:
         case "1":
-            enterNewKeys()
+            enter_new_keys()
         case "2":
             valid = is_AWS_config_credentials_valid()
             print(f"Keys are {'Valid' if valid else 'Invalid'}")

@@ -13,18 +13,23 @@ CONFIG_FILE = "config.ini"
 SECTION = "Settings"
 DEFAULT_KEY = "last_folder"
 
-def get_config_file_path():
-    return load_config()
+def get_default_config_file():
+    return CONFIG_FILE
 
 def load_config(config_path: str = CONFIG_FILE) -> configparser.ConfigParser:
-    """Load the config file, creating an empty parser if it doesn't exist."""
+    """
+    Loads the config file, creating an empty parser if it doesn't exist.
+    If left empty, uses a predefined default config path.
+    """
     config = configparser.ConfigParser()
     if os.path.exists(config_path):
         config.read(config_path)
     return config
 
 def load_config_and_get_section(config_path: str = CONFIG_FILE, section = SECTION) -> dict:
-    """Calls 'load_config' and trys to load the section requeted. Returns a valid section on success, and empty {} on fail."""
+    """
+    Returns a section of the given config. If the section does not exist, it returns a empty dictionary.
+    """
     config = load_config(config_path)
     if section in config:
         return config[section]
@@ -32,33 +37,38 @@ def load_config_and_get_section(config_path: str = CONFIG_FILE, section = SECTIO
 
 def save_config(config, config_path:str = CONFIG_FILE):
     """
-    Make sure to load in the main config before adding new variables in saving. 
+    Saves the given config data to a given file path.
+    !!!Make sure to load in the main config before adding new variables when saving!!!. 
     Otherwise, you will create a new config and overwrite old data.
     """
     with open(config_path, "w") as f:
         config.write(f)
 
-def save_key_to_config(key: str, folder_path: str, config_path: str = CONFIG_FILE) -> None:
+def save_key_to_config(key: str, pair: str, section: str = SECTION, config_path: str = CONFIG_FILE) -> None:
     """
     Save the given folder path under `key` in the config file.
     Reads the existing file first so other keys aren't wiped out.
     """
     config = load_config(config_path)
-    if SECTION not in config:
-        config[SECTION] = {}
-    config[SECTION][key] = str(folder_path)
+    if section not in config:
+        config[section] = {}
+    config[section][key] = str(pair)
     with open(config_path, "w") as f:
         config.write(f)
 
+# Highly specialized functions bellow vvv
+# This is mostly AI code bellow, I originally had it generate this part but over time, I have changed a lot of it.
 
 def get_saved_folder(key: str = DEFAULT_KEY, config_path: str = CONFIG_FILE) -> str | None:
-    """Return the folder path saved under `key`, or None if not set."""
+    """
+    Return the folder path saved under `key`, or None if not set.
+    """
     config = load_config(config_path)
     if SECTION in config and key in config[SECTION]:
         return config[SECTION][key]
     return None
 
-
+# Added a conditional to determine if we want to prompt for a slide.
 def prompt_for_folder(prompt_text: str = "Please enter the folder path where your documents are stored: ", prompt_for_new_folder = False) -> str:
     """Ask the user to enter a folder path, validating it exists."""
     while True:

@@ -1,4 +1,4 @@
-from Team5FinalProject.src.tools.helper_functions import options_printer
+from tools.helper_functions import options_printer
 
 def test_options_printer_empty():
     user_input = options_printer([])

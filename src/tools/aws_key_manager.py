@@ -1,26 +1,35 @@
 from getpass import getpass
 import boto3
 from botocore.exceptions import ClientError, EndpointConnectionError, NoCredentialsError, NoRegionError
-from tools.folder_path_logic import load_config, load_config_and_get_section, save_config
+from tools.folder_path_logic import load_config, load_config_and_get_section, save_config, get_default_config_file
 
-def enter_new_keys(config_path: str = ""):
-    # Try to load in config before we add new things to prevent overwriting.
+# Added aws_section for testing.
+def enter_new_keys(config_path: str = "", aws_section = {}):
+    """
+    When called, prompts the user to input their AWS keys which are then saved to the default config.
+    Note: this method would need a better implementation if this project ever had to be continued, but it will work for this.
+    """
     if config_path == "":
-        config = load_config()
+        config_path = get_default_config_file()
+
+    # Try to load in config before we add new things to prevent overwriting.
+    config = load_config(config_path)
+
+    if aws_section == {}:
+        config["AWS"] = {
+            "access_key_id": input("AWS access key: ").strip(),
+            "secret_access_key": getpass("AWS secret key: ", echo_char="*").strip(),
+            "region": input("AWS region: ").strip()
+        }
     else:
-        config = load_config(config_path=config_path)
+        config["AWS"] = aws_section
 
-    config["AWS"] = {
-        "access_key_id": input("AWS access key: ").strip(),
-        "secret_access_key": getpass("AWS secret key: ", echo_char="*").strip(),
-        "region": input("AWS region: ").strip()
-    }
-
-    save_config(config=config)
+    # Our config_path was not being passed in. Problem solved.
+    save_config(config=config, config_path=config_path)
 
     print("Keys saved✅")
 
-def is_AWS_config_credentials_valid() -> bool:
+def is_AWS_config_credentials_valid(config_path = "", creds = {}) -> bool:
     # Pull keys from config
     # Call boto3 and see if keys are valid
     # return true if valid, false if not.
@@ -29,11 +38,22 @@ def is_AWS_config_credentials_valid() -> bool:
     - Note: code form googles AI. A lot of changes made since it was not the best though.
     """
     try:
-        aws = load_config_and_get_section(section = "AWS")
+        aws_access_key_id = ""
+        aws_secret_access_key = ""
+        region_name = ""
+        
+        if creds == {}:
+            if config_path == "":
+                config_path = get_default_config_file()
 
-        aws_access_key_id = aws.get("access_key_id")
-        aws_secret_access_key = aws.get("secret_access_key")
-        region_name = aws.get("region")
+            aws = load_config_and_get_section(config_path=config_path,section = "AWS")
+            aws_access_key_id = aws.get("access_key_id")
+            aws_secret_access_key = aws.get("secret_access_key")
+            region_name = aws.get("region")
+        else:
+            aws_access_key_id = creds.get("access_key_id")
+            aws_secret_access_key = creds.get("secret_access_key")
+            region_name = creds.get("region")
 
         # 1. Create a session with explicit keys and region
         session = boto3.Session(

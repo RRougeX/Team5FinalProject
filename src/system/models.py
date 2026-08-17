@@ -4,7 +4,7 @@ from llama_index.llms.bedrock_converse import BedrockConverse
 
 from importlib.resources import path
 
-from Team5FinalProject.src.tools.folder_path_logic import load_config_and_get_section
+from tools.folder_path_logic import load_config_and_get_section
 
 
 def getEmbeddingModel():
