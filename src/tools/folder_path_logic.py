@@ -112,9 +112,9 @@ def get_folder_path(key: str = DEFAULT_KEY, config_path: str = CONFIG_FILE, prom
 
     saved_folder = get_saved_folder(key, config_path)
 
-    if not saved_folder:
-        folder = prompt_for_folder(prompt_text)
-        save_key_to_config(key, folder, config_path)
+    if not saved_folder or saved_folder == "None":
+        folder = prompt_for_folder(prompt_text, prompt_for_new_folder=prompt_for_new_folder)
+        save_key_to_config(key, folder, config_path=config_path)
         return folder
 
     answer = input(
@@ -129,7 +129,7 @@ def get_folder_path(key: str = DEFAULT_KEY, config_path: str = CONFIG_FILE, prom
     else:
         folder = prompt_for_folder(prompt_text=prompt_text, prompt_for_new_folder=prompt_for_new_folder)
 
-    save_key_to_config(key, folder, config_path)
+    save_key_to_config(key, folder, config_path=config_path)
     return folder
 
 

@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 import chromadb
 from llama_index.core import StorageContext, VectorStoreIndex
@@ -80,6 +81,13 @@ def load_embedding_data():
         print("Failed to load embedding data. Valid folder not given.")
         return None
 
+    path = Path(folder)
+
+    with os.scandir(path) as it:
+        if not any(it):
+            print("Failed to load embedding data. Folder is empty.")
+            return None
+
     embedding_llm = get_embedding_llm_print()
 
     # Don't know what will happen if you try to pull from a bad path right now. Worth testing and fixing.
@@ -95,13 +103,19 @@ def create_embedding_data():
         prompt_for_new_folder=True
     )
 
+    if rag_folder == None:
+        return None
+
     documents_folder = get_folder_path(
         key="last_used_documents_path",
         prompt_text=(
             "Please enter the folder path where your documents are stored: "
         ),
-        prompt_for_new_folder=True
+        prompt_for_new_folder=False
     )
+
+    if documents_folder == None:
+        return None
 
     report_paths = [
         Path(path)
@@ -112,6 +126,10 @@ def create_embedding_data():
         report_paths,
         ""
     )
+
+    if reportIDs == None:
+        print("Failed to load and chunk given Reports.\nReturning to options page...")
+        return None
 
     embedding_llm = get_embedding_llm_print()
 

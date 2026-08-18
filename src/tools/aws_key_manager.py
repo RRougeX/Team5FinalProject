@@ -15,14 +15,69 @@ def enter_new_keys(config_path: str = "", aws_section = {}):
     # Try to load in config before we add new things to prevent overwriting.
     config = load_config(config_path)
 
+    # for each input
+        # Do we have a previous config of the data?
+        # Load in previous data
+        # If use puts in "" leave it the same, else change it.
+
+    access_key_id_info = ""
+    secret_access_key_info = ""
+    region_info = ""
+
+    access_key_id_display = ""
+    secret_access_key_display = ""
+    region_display = ""
+
+    if "AWS" in config:
+        aws = config["AWS"]
+        access_key_id_info = aws.get("access_key_id")
+        if access_key_id_info == None:
+            access_key_id_info = ""
+        else:
+            access_key_id_display = f" [****{access_key_id_info[-4:]}]"
+
+        secret_access_key_info = aws.get("secret_access_key")
+        if secret_access_key_info == None:
+            secret_access_key_info = ""
+        else:
+            secret_access_key_display = f" [****{secret_access_key_info[-4:]}]"
+
+        region_info = aws.get("region")
+        if region_info == None:
+            region_info = ""
+        else:
+            region_display = f" [{region_info}]"
+
+    access_key_id = ""
+    secret_access_key = ""
+    region = ""
+    # aws_section is used for making testing easier.
     if aws_section == {}:
-        config["AWS"] = {
-            "access_key_id": input("AWS access key: ").strip(),
-            "secret_access_key": getpass("AWS secret key: ", echo_char="*").strip(),
-            "region": input("AWS region: ").strip()
-        }
+        access_key_id = getpass(f"AWS access key{access_key_id_display}: ", echo_char="*").strip()
+        secret_access_key = getpass(f"AWS secret key{secret_access_key_display}: ", echo_char="*").strip()
+        region = input(f"AWS region{region_display}: ").strip()
     else:
-        config["AWS"] = aws_section
+        access_key_id = aws_section["access_key_id"]
+        secret_access_key = aws_section["secret_access_key"]
+        region = aws_section["region"]
+
+    if access_key_id == "":
+        access_key_id = access_key_id_info
+
+    if secret_access_key == "":
+        secret_access_key = secret_access_key_info
+
+    if region == "":
+        region = region_info
+        
+        
+
+    
+    config["AWS"] = {
+        "access_key_id": access_key_id,
+        "secret_access_key": secret_access_key,
+        "region": region
+    }
 
     # Our config_path was not being passed in. Problem solved.
     save_config(config=config, config_path=config_path)

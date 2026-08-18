@@ -36,8 +36,9 @@ def test_enter_new_keys_with_test_var():
 #     enter_new_keys(config_path="aws_test_config.ini" ,aws_section=keys)
 def test_is_AWS_config_credentials_valid_bad_credentials():
     test_enter_new_keys_with_test_var()
-    assert is_AWS_config_credentials_valid() == False
+    assert is_AWS_config_credentials_valid("aws_test_config.ini") == False
 
+# !!!THIS TEST WILL FAIL IF YOU DON'T ADD IN YOUR VALID CREDENTIALS TO A CONFIG FILE THAT MATCHES THE INPUT!!!
 def test_is_AWS_config_credentials_valid_good_credentials():
     # Please add valid keys to config file. You should not have them hardcode added.
     assert is_AWS_config_credentials_valid(config_path="aws_valid_keys_for_testing.ini") == True

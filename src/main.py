@@ -22,7 +22,7 @@ def load_or_create_embedding_data():
             return None
 
 def awsKeyCheck():
-    user_input = options_printer(["Enter new keys", "Check if keys are valid", "Back (keep using current keys)"], "Pluralsight Sandbox Keys")
+    user_input = options_printer(["Enter new keys", "Check if keys are valid", "Back (keep using current keys)"], "AWS Keys")
 
     match user_input:
         case "1":

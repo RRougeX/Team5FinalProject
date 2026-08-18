@@ -80,7 +80,7 @@ def start_query_manager(index):
     while True:
         query = input(
             "\nAsk a Question "
-            "(Enter '2' to Create Final Report or 'back' to Return): "
+            "(Enter '2' to Create Final Report or 'back' to Return) ->\n: "
         ).strip()
 
         if query.lower() == "back":
