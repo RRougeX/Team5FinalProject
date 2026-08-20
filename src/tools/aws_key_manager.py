@@ -1,4 +1,5 @@
-from getpass import getpass
+#from getpass import getpass
+import pwinput
 import boto3
 from botocore.exceptions import ClientError, EndpointConnectionError, NoCredentialsError, NoRegionError
 from tools.folder_path_logic import load_config, load_config_and_get_section, save_config, get_default_config_file
@@ -53,8 +54,8 @@ def enter_new_keys(config_path: str = "", aws_section = {}):
     region = ""
     # aws_section is used for making testing easier.
     if aws_section == {}:
-        access_key_id = getpass(f"AWS access key{access_key_id_display}: ", echo_char="*").strip()
-        secret_access_key = getpass(f"AWS secret key{secret_access_key_display}: ", echo_char="*").strip()
+        access_key_id = pwinput.pwinput(f"AWS access key{access_key_id_display}: ", mask="*").strip()
+        secret_access_key = pwinput.pwinput(f"AWS secret key{secret_access_key_display}: ", mask="*").strip()
         region = input(f"AWS region{region_display}: ").strip()
     else:
         access_key_id = aws_section["access_key_id"]

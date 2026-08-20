@@ -1,5 +1,4 @@
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
-from dotenv import load_dotenv
 from llama_index.llms.bedrock_converse import BedrockConverse
 
 from importlib.resources import path

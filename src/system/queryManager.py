@@ -25,6 +25,7 @@ Include:
 - Technical Behaviors
 - Indicators of Compromise
 - MITRE ATT&CK Techniques
+- Know Exploitable Vulnerabilities
 - Threat-Hunting Recommendations
 - Detection Recommendations
 - Sources

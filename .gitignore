@@ -42,3 +42,6 @@ crash.log
 data
 src/config.ini
 config.ini
+
+# Embedding locations
+cyber_embeddings/
